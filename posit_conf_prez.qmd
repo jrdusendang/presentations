@@ -1,0 +1,261 @@
+---
+title: "posit::conf(2024)"
+date: 2024-09-04
+author: Jenny Dusendang 
+format: revealjs
+editor: visual
+---
+
+# Topics 
+
+- Background
+- R & Python 
+- Communication of Results  
+- CI/CD & Reproducability 
+- Organization Communication 
+
+
+## Background
+
+:::{.incremental}
+
+- Posit is formerly RStudio
+- posit::conf() is Posit's annual conference 
+- Less R-specific, more general open-source tooling 
+- A bit of a pharma / public health focus but lots of other industries as well: 
+    + Banking 
+    + Engineering 
+    + Academia 
+
+:::
+
+
+## Focus 
+
+:::: {.columns}
+
+::: {.column width="40%" .fragment fragment-index=1}
+
+**Less**
+
+- Coding guidance 
+- Complex methodologies 
+
+:::
+
+::: {.column width="60% .fragment fragment-index=2} 
+
+**More**
+
+- Visualization tips 
+- Tools to communicate results 
+- Dev ops practices for reproducability 
+
+:::
+
+::::
+
+
+# R & Python 
+
+
+## Quarto documents
+
+- Integrate python, R, Julia, Observable code in 1 document 
+- Create *very pretty* output (Word, presentations, dashboards, websites) with text, code, graphs, tables, pictures, etc. 
+
+
+## Render Python 
+
+::: aside 
+This is not a screenshot - this code ran when rendering quarto doc
+:::
+
+```{python}
+#| echo: true
+
+vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+
+for name in ['Jenny', 'Ariel', 'Yuval']:
+  
+  name_vowel_list = []
+  
+  for letter in name: 
+    if letter.lower() in vowels:
+      
+      name_vowel_list.append(letter.lower())
+      
+  print(name)
+  print(name_vowel_list)
+      
+```
+
+
+## And R (in the same document)
+
+::: aside 
+This is not a screenshot - this code ran when rendering quarto doc
+:::
+
+```{r}
+#| echo: true
+
+library(ggplot2) 
+
+diamond_color_ramp <- colorRampPalette(c('gold1', 'white'))(7)
+
+ggplot(diamonds, aes(x = carat, y = price, color = color)) +
+  geom_point(size = 2, shape = 18) +
+  scale_color_manual(name = 'color', values = diamond_color_ramp) +
+  theme_dark()
+
+```
+
+
+## Documents
+
+![](posit_conf_prez_files/image_document.png)
+
+
+## Dashboards 
+
+![](posit_conf_prez_files/image_dashboard.png)
+
+
+## Websites 
+
+[Quarto website](https://quarto.org/) 
+
+
+## Presentations 
+
+```{{r}}
+---
+title: "posit::conf(2024)"
+date: 2024-09-04
+author: Jenny Dusendang 
+format: revealjs
+editor: visual
+---
+
+# Topics 
+
+- Background
+- R & Python 
+- Visualizations 
+- CI/CD & Reproducability 
+- Organization Communication 
+
+
+## Background
+
+:::{.incremental}
+
+- Posit is formerly RStudio
+- posit::conf() is Posit's annual conference 
+- Less R-specific, more general open-source tooling 
+- A bit of a pharma / public health focus but lots of other industries as well: 
+    + Banking 
+    + Engineering 
+    + Academia 
+
+:::
+```
+
+
+## R & Python 
+
+**Polars** 
+
+- Alternative to *pandas* in python
+- Allows for dplyr-like syntax 
+- Fast 
+
+```{r}
+
+
+
+```
+
+
+```{python}
+%pip install polars 
+
+import polars 
+
+```
+
+```{python}
+import polars 
+
+test = r.diamonds 
+
+q = (
+    r.diamonds
+    .filter(pl.col("sepal_length") > 5)
+    .group_by("species")
+    .agg(pl.all().sum())
+)
+
+df = q.collect()
+
+```
+
+# Communication of Results 
+
+## Formatting tables for publication
+
+`gt`
+
+- Creates language for table formatting 
+- Tons of options for exactly how to structure table output 
+
+`gtsummary`
+
+- Based off `gt`, but with clinical data standards in mind as defaults 
+- Lots of printing options for different statistics 
+
+`tfrmt`
+
+- Separates formatting and labeling from data itself 
+- Allows for easy post-production changes such as decimal points and labels 
+
+## Example: `gtsummary` 
+
+```{r}
+#| echo: true
+
+library(gtsummary)
+
+trial |>
+  select(age, grade, response, trt) |>
+  tbl_summary(
+    by = 'trt')
+```
+
+
+## Dashboards 
+
+`quarto` 
+
+- Pretty layouts and organizations of dashboards 
+
+`shiny`
+
+- Interactivity 
+
+Can mix and match `quarto` and `shiny` components 
+
+[GDP and Life Expectancy](https://jjallaire.github.io/gapminder-dashboard/) 
+
+
+
+
+
+
+
+
+
+# Organization communication 
+
+
