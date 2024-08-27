@@ -6,68 +6,55 @@ format: revealjs
 editor: visual
 ---
 
-# Topics 
+# Topics
 
-- Background
-- R & Python 
-- Communication of Results  
-- CI/CD & Reproducability 
-- Organization Communication 
-
+-   Background
+-   R & Python
+-   Communication of Results\
+-   CI/CD & Reproducability
+-   Organization Communication
 
 ## Background
 
-:::{.incremental}
-
-- Posit is formerly RStudio
-- posit::conf() is Posit's annual conference 
-- Less R-specific, more general open-source tooling 
-- A bit of a pharma / public health focus but lots of other industries as well: 
-    + Banking 
-    + Engineering 
-    + Academia 
-
+::: incremental
+-   Posit is formerly RStudio
+-   posit::conf() is Posit's annual conference
+-   Less R-specific, more general open-source tooling
+-   A bit of a pharma / public health focus but lots of other industries as well:
+    -   Banking
+    -   Engineering
+    -   Academia
 :::
 
+## Focus
 
-## Focus 
-
-:::: {.columns}
-
-::: {.column width="40%" .fragment fragment-index=1}
-
+::: columns
+::: {.column .fragment width="40%" fragment-index="1"}
 **Less**
 
-- Coding guidance 
-- Complex methodologies 
-
+-   Coding guidance
+-   Complex methodologies
 :::
 
-::: {.column width="60% .fragment fragment-index=2} 
-
+::: {.column .fragment width="\"60%" fragment-index="2"}
 **More**
 
-- Visualization tips 
-- Tools to communicate results 
-- Dev ops practices for reproducability 
-
+-   Visualization tips
+-   Tools to communicate results
+-   Dev ops practices for reproducability
+:::
 :::
 
-::::
-
-
-# R & Python 
-
+# R & Python
 
 ## Quarto documents
 
-- Integrate python, R, Julia, Observable code in 1 document 
-- Create *very pretty* output (Word, presentations, dashboards, websites) with text, code, graphs, tables, pictures, etc. 
+-   Integrate python, R, Julia, Observable code in 1 document
+-   Create *very pretty* output (Word, presentations, dashboards, websites) with text, code, graphs, tables, pictures, etc.
 
+## Render Python
 
-## Render Python 
-
-::: aside 
+::: aside
 This is not a screenshot - this code ran when rendering quarto doc
 :::
 
@@ -90,10 +77,9 @@ for name in ['Jenny', 'Ariel', 'Yuval']:
       
 ```
 
-
 ## And R (in the same document)
 
-::: aside 
+::: aside
 This is not a screenshot - this code ran when rendering quarto doc
 :::
 
@@ -111,25 +97,21 @@ ggplot(diamonds, aes(x = carat, y = price, color = color)) +
 
 ```
 
-
 ## Documents
 
 ![](posit_conf_prez_files/image_document.png)
 
-
-## Dashboards 
+## Dashboards
 
 ![](posit_conf_prez_files/image_dashboard.png)
 
+## Websites
 
-## Websites 
+[Quarto website](https://quarto.org/)
 
-[Quarto website](https://quarto.org/) 
+## Presentations
 
-
-## Presentations 
-
-```{{r}}
+``` {{r}}
 ---
 title: "posit::conf(2024)"
 date: 2024-09-04
@@ -162,30 +144,31 @@ editor: visual
 :::
 ```
 
+## R & Python
 
-## R & Python 
+**Polars**
 
-**Polars** 
+-   Alternative to *pandas* in python
+-   Allows for dplyr-like syntax
+-   Fast
 
-- Alternative to *pandas* in python
-- Allows for dplyr-like syntax 
-- Fast 
 
 ```{r}
 
+library(reticulate) 
+virtualenv_create("prez-proj") 
+py_install("seaborn", envname = "prez-proj") 
+use_virtualenv("prez-proj")
 
-
-```
-
-
-```{python}
-%pip install polars 
-
-import polars 
+py_config()
 
 ```
 
+
+
 ```{python}
+
+import seaborn
 import polars 
 
 test = r.diamonds 
@@ -199,28 +182,30 @@ q = (
 
 df = q.collect()
 
+globals().clear
+
 ```
 
-# Communication of Results 
+# Communication of Results
 
 ## Formatting tables for publication
 
 `gt`
 
-- Creates language for table formatting 
-- Tons of options for exactly how to structure table output 
+-   Creates language for table formatting
+-   Tons of options for exactly how to structure table output
 
 `gtsummary`
 
-- Based off `gt`, but with clinical data standards in mind as defaults 
-- Lots of printing options for different statistics 
+-   Based off `gt`, but with clinical data standards in mind as defaults
+-   Lots of printing options for different statistics
 
 `tfrmt`
 
-- Separates formatting and labeling from data itself 
-- Allows for easy post-production changes such as decimal points and labels 
+-   Separates formatting and labeling from data itself
+-   Allows for easy post-production changes such as decimal points and labels
 
-## Example: `gtsummary` 
+## Example: `gtsummary`
 
 ```{r}
 #| echo: true
@@ -233,29 +218,18 @@ trial |>
     by = 'trt')
 ```
 
+## Dashboards
 
-## Dashboards 
+`quarto`
 
-`quarto` 
-
-- Pretty layouts and organizations of dashboards 
+-   Pretty layouts and organizations of dashboards
 
 `shiny`
 
-- Interactivity 
+-   Interactivity
 
-Can mix and match `quarto` and `shiny` components 
+Can mix and match `quarto` and `shiny` components
 
-[GDP and Life Expectancy](https://jjallaire.github.io/gapminder-dashboard/) 
+[GDP and Life Expectancy](https://jjallaire.github.io/gapminder-dashboard/)
 
-
-
-
-
-
-
-
-
-# Organization communication 
-
-
+# Organization communication
