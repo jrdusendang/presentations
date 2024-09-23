@@ -1,0 +1,19 @@
+/*-- scss:defaults --*/
+
+// colors
+$body-bg: #DFF2BA !default;
+$body-color: #0B2545 !default;
+$text-muted: #6C9B9D !default;
+$link-color: #EC9192 !default;
+$link-color-hover: #6C9B9D !default;
+$selection-color: #0B2545 !default;
+$selection-bg: #EC9192 !default;
+
+// headings 
+$presentation-heading-color: #EC9192 !default;
+
+// code blocks 
+$code-block-bg: lighten($body-bg, 50%) !default;
+
+// inline-code 
+$code-color:	#6C9B9D !default;

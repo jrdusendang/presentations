@@ -1,0 +1,394 @@
+---
+title: "posit::conf(2024)"
+date: 2024-09-04
+author: Jenny Dusendang 
+format: 
+  revealjs:
+    theme: [default, presentation_theme.scss]
+editor: source
+---
+
+
+# Topics
+
+-   Background
+-   R & Python
+-   Communication of Results
+-   DuckDB 
+-   Pharma Landscape
+-   Resources & References
+
+
+# Background
+
+
+## Background
+
+::: incremental
+-   Posit is formerly RStudio
+-   posit::conf() is Posit's annual conference
+-   Less R-specific, more general open-source tooling
+-   A bit of a pharma / public health focus but lots of other industries as well:
+    -   Banking
+    -   Engineering
+    -   Academia
+:::
+
+
+## Focus
+
+::: columns
+::: {.column .fragment width="40%" fragment-index="1"}
+**Less**
+
+-   Coding guidance
+-   Complex methodologies
+:::
+
+::: {.column .fragment width="60%" fragment-index="2"}
+**More**
+
+-   Visualization tips
+-   Tools to communicate results
+-   Dev ops practices for reproducability
+:::
+:::
+
+
+# R & Python
+
+
+## Background
+
+-   Data scientists are often caught in-between R and Python
+-   Each has pros and cons, and may need to be utilized together
+
+
+## Polars
+
+-   Python package
+-   Allows for dplyr-like syntax in python
+-   Alternative to *pandas* in python
+-   Fast
+
+
+```{r}
+#| include: false 
+  
+library(reticulate) 
+virtualenv_create("prez-proj") 
+py_install(c("pyarrow", "polars", "pandas"), envname = "prez-proj") 
+use_virtualenv("prez-proj")
+
+```
+
+```{python}
+#| include: false 
+
+import pandas as pd 
+import pyarrow as pa 
+
+```
+
+
+---
+
+```{r}
+#| label: R 
+#| echo: true
+#| output-location: column-fragment
+#| code-line-numbers: "|1,3|6,7,8,9|"
+library(dplyr)
+
+r_iris = iris 
+
+r_output_table = r_iris |>
+  filter(Petal.Length >= 2) |>
+  group_by(Species) |>
+  summarize(mean_petal_width = mean(Petal.Width)) |>
+  arrange(desc(mean_petal_width))
+
+print(r_output_table)
+
+```
+
+```{python}
+#| label: Python 
+#| echo: true
+#| output-location: column-fragment
+#| code-line-numbers: "|1,3|6,7,8,9|"
+import polars
+
+py_iris = polars.from_pandas(r.iris)
+
+py_output_table = (py_iris
+  .filter(polars.col('Petal.Length') >= 2)
+  .group_by('Species')
+  .agg(mean_petal_width = polars.col('Petal.Width').mean())
+  .sort(polars.col('mean_petal_width'), descending = True))
+
+print(py_output_table)
+
+```
+
+
+## Quarto documents
+
+-   Integrate python, R, Julia, Observable code in 1 document
+-   Create output with text, code, graphs, tables, pictures, etc.
+
+
+## Render Python
+
+::: aside
+This is not a screenshot - this code ran when rendering quarto doc
+:::
+
+```{python}
+#| echo: true
+#| output-location: column
+
+vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+
+for name in ['Jenny', 'Ariel', 'Yuval']:
+  
+  name_vowel_list = []
+  
+  for letter in name: 
+    if letter.lower() in vowels:
+      
+      name_vowel_list.append(letter.lower())
+      
+  print(name)
+  print(name_vowel_list)
+      
+```
+
+
+## And R (in the same document)
+
+::: aside
+This is not a screenshot - this code ran when rendering quarto doc
+:::
+
+```{r, fig.width = 4, fig.height = 4}
+#| echo: true
+#| output-location: column
+
+library(ggplot2) 
+
+diamond_color_ramp <- colorRampPalette(c('gold1', 'white'))(7)
+
+ggplot(diamonds, aes(x = carat, y = price, color = color)) +
+  geom_point(size = 2, shape = 18) +
+  scale_color_manual(name = 'color', values = diamond_color_ramp) +
+  ggtitle('Diamond color by carat and price') +
+  theme_classic() +
+  theme(panel.background = element_rect(fill = 'black'), 
+        plot.background = element_rect(fill = 'black'),
+        legend.background = element_rect(fill = 'black'),
+        legend.text = element_text(color = 'white'),
+        legend.title = element_text(color = 'white'), 
+        axis.text = element_text(color = 'white'),
+        axis.title = element_text(color = 'white'),
+        axis.line = element_line(color = 'white'),
+        plot.title = element_text(color = 'white'))
+
+```
+
+
+# Communication of Results
+
+
+## Quarto
+
+-   Integrate python, R, Julia, Observable code in 1 document
+-   Create output with text, code, graphs, tables, pictures, etc.
+-   Output in many formats (PDF, dashboard, website, presentation) with minimal editing
+
+
+## Quarto: Documents
+
+![](posit_conf_prez_files/image_document.png)
+
+
+## Quarto: Dashboards
+
+![](posit_conf_prez_files/image_dashboard.png)
+
+
+## Quarto: Websites
+
+[Quarto website](https://quarto.org/)
+
+
+## Quarto: Presentations
+
+``` {{r}}
+---
+title: "posit::conf(2024)"
+date: 2024-09-04
+author: Jenny Dusendang 
+format: revealjs
+editor: visual
+---
+
+# Topics 
+
+- Background
+- R & Python 
+- Visualizations 
+- CI/CD & Reproducability 
+- Organization Communication 
+
+
+## Background
+
+:::{.incremental}
+
+- Posit is formerly RStudio
+- posit::conf() is Posit's annual conference 
+- Less R-specific, more general open-source tooling 
+- A bit of a pharma / public health focus but lots of other industries as well: 
+    + Banking 
+    + Engineering 
+    + Academia 
+
+:::
+```
+
+
+## Formatting tables for publication
+
+`gt`
+
+-   Creates language for table formatting
+-   Tons of options for custom table output
+
+`gtsummary`
+
+-   Based off `gt`, with clinical data standards as defaults
+-   Printing options for different statistics
+
+`tfrmt`
+
+-   Separates formatting and labeling from data
+-   Allows for easy post-production changes such as decimal points and labels
+
+
+## Example: `gtsummary`
+
+```{r}
+#| echo: true
+
+library(gtsummary)
+
+trial |>
+  select(age, grade, response, trt) |>
+  tbl_summary(
+    by = 'trt')
+```
+
+
+## Dashboards
+
+`quarto`
+
+-   Pretty layouts and organizations of dashboards
+
+`shiny`
+
+-   Interactivity
+
+Can mix and match `quarto` and `shiny` components
+
+[GDP and Life Expectancy](https://jjallaire.github.io/gapminder-dashboard/)
+
+
+# DuckDB 
+
+
+## 
+
+
+```{r}
+
+library(DBI)
+
+con = dbConnect()
+df = dbGetQuery(con, "SELECT * FROM")
+
+
+
+library(duckdb)
+
+```
+
+
+# Pharma Landscape
+
+
+## Technical side
+
+```{r}
+
+library(wordcloud)
+
+wc_data_tech = data.frame(
+  word = c('CI/CD', 'duckDB', 'Apache Arrow', 'Python', 'R', 
+           'Quarto', 'GenAI', 'DevOps', 'API', 'Kernel', 
+           'Cluster', 'Databricks', 'Open Source', 'Parquet', 'Quarto',
+           'Shiny', 'Git', 'Interactive'),
+  times = c(10, 2, 2, 15, 5, 
+            3, 27, 20, 16, 10, 
+            15, 6, 30, 10, 5, 
+            10, 100, 20))
+
+set.seed(1234)
+wordcloud(words = wc_data_tech$word, freq = wc_data_tech$times, min.freq = 1, max.words=200, random.order=FALSE, rot.per=0,            colors=brewer.pal(8, "Dark2"))
+
+```
+
+
+## Research Side 
+
+```{r}
+
+wc_data_research = data.frame(
+  word = c('Dashboard', 'R', 'SAS', 'Tables', 'Python', 
+           'Statistical Computing Environment', 'Plots', 'Excel', 'Microsoft Word', 'Statistical Modeling',
+           'Enterprise', 'Stata', 'SPSS'),
+  times = c(10, 12, 100, 50, 2,
+            8, 18, 40, 70, 20,
+            15, 30, 20))
+
+set.seed(1234)
+wordcloud(words = wc_data_research$word, freq = wc_data_research$times, min.freq = 1, max.words=200, random.order=FALSE, rot.per=0.35,            colors=brewer.pal(8, "Dark2"))
+
+```
+
+
+## Resources & References
+
+::: columns
+::: {.column width="50%"}
+
+- [Presentation Git Repo](https://github.com/jrdusendang/presentations)
+- [posit::conf(2024)](https://posit.co/conference/)
+- [Posit website](https://posit.co/)
+
+:::
+::: {.column width="50%"}
+
+- [DuckDB](https://duckdb.org/) 
+- [duckplyr](https://duckdb.org/2024/04/02/duckplyr.html) 
+- [gt](https://gt.rstudio.com/) 
+- [gtsummary](https://www.danieldsjoberg.com/gtsummary/)
+- [Polars](https://docs.pola.rs/) 
+- [quarto](https://quarto.org/) 
+- [Shiny](https://shiny.posit.co/)
+- [tfrmt](https://gsk-biostatistics.github.io/tfrmt/articles/examples.html) 
+
+:::
+:::
+
